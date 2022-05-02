@@ -1,8 +1,0 @@
-providerConfigName: default
-region: us-east-1
-vpcName: playground-vpc
-vpcCidrBlock: 10.0.0.0/16
-subnetName: subnet-1
-subnetAvailabilityZone: us-east-1a
-subnetCidrBlock: 10.0.0.0/24
-igwName: internetgateway

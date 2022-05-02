@@ -5,16 +5,16 @@
 ### Option 1: Setting up VPC via Helm install
 (https://doc.crds.dev/github.com/crossplane/provider-aws/ec2.aws.crossplane.io/VPC/v1beta1@v0.26.1)
 ```
-$ helm install charts/playground_vpc --generate-name
+$ helm install charts/playground-vpc --generate-name
 
- # install with custom values: $ helm install -f <my_values.yaml> playground_vpc --generate-name
+ # install with custom values: $ helm install -f <my_values.yaml> playground-vpc --generate-name
  # delete: $ helm uninstall <generated-release-name>
 ```
 ### Option 2: Setting up VPC via ArgoCD
  ```
 $ argocd app create playground-vpc-app \
 --repo https://github.com/Creatiwww/EAC.git \
---path charts/playground_vpc \
+--path charts/playground-vpc \
 --sync-policy automatic \
 --dest-server https://kubernetes.default.svc \
 --dest-namespace default \

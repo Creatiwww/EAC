@@ -8,13 +8,13 @@ spec:
     routes:
       - destinationCidrBlock: 0.0.0.0/0
         gatewayIdRef:
-          name: {{ .Values.igwName }}
+          name: {{ .Values.igw.name }}
     associations:
       - subnetIdRef:
-          name: {{ .Values.subnetName }}
+          name: {{ .Values.subnet.name }}
       # - subnetIdRef:
       #     name: subnet-2
     vpcIdRef:
-      name: {{ .Values.vpcName }}
+      name: {{ .Values.vpc.name }}
   providerConfigRef:
     name: {{ .Values.providerConfigName }}

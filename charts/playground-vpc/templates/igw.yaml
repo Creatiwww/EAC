@@ -1,11 +1,11 @@
 apiVersion: ec2.aws.crossplane.io/v1beta1
 kind: InternetGateway
 metadata:
-  name: {{ .Values.igwName }}
+  name: {{ .Values.igw.name }}
 spec:
   forProvider:
     region: {{ .Values.region }}
     vpcIdRef:
-      name: {{ .Values.vpcName }}
+      name: {{ .Values.vpc.name }}
   providerConfigRef:
     name: {{ .Values.providerConfigName }}
