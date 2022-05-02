@@ -1,4 +1,6 @@
 # Example of AWS infra provisioning with Crossplane and Helm
+We creating on AWS VPC with Subnet, IGW and RT. Kind is used as local K8s cluster. Desired AWS infra state described with Crossplane managed resources (yaml files). Those files templated with Helm. Once resources deployed to K8s, Cross plane creates related resources on AWS. ArgoCD could watch for Helm chart on git repo sync it with release on K8s cluster. 
+Installation guideline follows below.
 
 ## Usage
 
