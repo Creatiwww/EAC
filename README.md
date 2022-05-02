@@ -1,14 +1,28 @@
-# AWS infra provisioning with Crossplane and Helm
+# Example of AWS infra provisioning with Crossplane and Helm
 
 ## Usage
-### Setting up VPC via Helm
+
+### Option 1: Setting up VPC via Helm install
 (https://doc.crds.dev/github.com/crossplane/provider-aws/ec2.aws.crossplane.io/VPC/v1beta1@v0.26.1)
 ```
-$ cd ../charts
-$ helm install playground_vpc --generate-name
+$ helm install charts/playground_vpc --generate-name
 
  # install with custom values: $ helm install -f <my_values.yaml> playground_vpc --generate-name
  # delete: $ helm uninstall <generated-release-name>
+```
+### Option 2: Setting up VPC via ArgoCD
+ ```
+$ argocd app create playground-vpc-app \
+--repo https://github.com/Creatiwww/EAC.git \
+--path charts/playground_vpc \
+--sync-policy automatic \
+--dest-server https://kubernetes.default.svc \
+--dest-namespace default \
+--values values.yaml
+
+# check status: $ argocd app get playground-vpc-app
+# sync manually: $ argocd app sync playground-vpc-app
+# delete app: $ argocd app delete playground-vpc-app
 ```
 
 ## Setup
@@ -20,21 +34,21 @@ $ chmod +x ./kind
 $ mv ./kind /usr/local/bin/kind
 ```
 
-### Make LB working with Kind
-(https://kind.sigs.k8s.io/docs/user/loadbalancer/)
-```
-$ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.12.1/manifests/namespace.yaml
-$ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.12.1/manifests/metallb.yaml
-$ kubectl apply -f https://kind.sigs.k8s.io/examples/loadbalancer/metallb-configmap.yaml
-```
-
-### Run cluster and set kubectl context
+### Run cluster
 ```
 $ kind create cluster --config initial-setup/kind-config.yaml --name=local-cluster
 
 # check existing contexts: $ kubectl config get-contexts
 # switch to context: $ kubectl config use-context kind-local-cluster
 # delete: $ kind delete cluster --name local-cluster
+```
+
+### Make LB working with Kind
+(https://kind.sigs.k8s.io/docs/user/loadbalancer/)
+```
+$ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.12.1/manifests/namespace.yaml
+$ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.12.1/manifests/metallb.yaml
+$ kubectl apply -f https://kind.sigs.k8s.io/examples/loadbalancer/metallb-configmap.yaml
 ```
 
 ### Install Crossplane
@@ -45,7 +59,7 @@ $ helm repo update
 $ helm install crossplane --namespace crossplane-system crossplane-stable/crossplane
 
 ```
-### Install Crossplane AWS Provider and set it up
+### Install and setup Crossplane AWS Provider
 (https://crossplane.io/docs/v1.7/cloud-providers/aws/aws-provider.html)
 ```
 $ kubectl apply -f initial-setup/aws-provider.yaml
@@ -97,16 +111,5 @@ $ export ARGOCD_SERVER=`kubectl get svc argocd-server -n argocd -o json | jq --r
 $ export ARGO_PWD=`kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d`
 
 $ argocd login $ARGOCD_SERVER --username admin --password $ARGO_PWD --insecure
-# or just make port forwarding, then: $ argocd login localhost:34675 --username admin --password $ARGO_
-```
-
-### Argo CD app setup
- ```
-argocd app create helloworld \
---repo https://github.com/ironcore864/go-hello-http.git \
---path helm \
---sync-policy automatic \
---dest-server https://kubernetes.default.svc \
---dest-namespace default \
---values values.yaml
+# or just make port forwarding (kubectl port-forward svc/argocd-server -n argocd 8080:443), then: $ argocd login localhost:8080 --username admin --password $ARGO_
 ```
