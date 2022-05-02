@@ -1,0 +1,17 @@
+apiVersion: ec2.aws.crossplane.io/v1beta1
+kind: Subnet
+metadata:
+  name: {{ .Values.subnetName }}
+spec:
+  forProvider:
+    region: {{ .Values.region }}
+    availabilityZone: {{ .Values.subnetAvailabilityZone }}
+    cidrBlock: {{ .Values.subnetCidrBlock }}
+    vpcIdRef:
+      name: {{ .Values.vpcName }}
+    tags:
+    - key: Name
+      value: {{ .Values.subnetName }}
+    mapPublicIPOnLaunch: true
+  providerConfigRef:
+    name: {{ .Values.providerConfigName }}

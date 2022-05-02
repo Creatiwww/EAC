@@ -4,17 +4,17 @@ metadata:
   name: routetable
 spec:
   forProvider:
-    region: us-east-1
+    region: {{ .Values.region }}
     routes:
       - destinationCidrBlock: 0.0.0.0/0
         gatewayIdRef:
-          name: internetgateway
+          name: {{ .Values.igwName }}
     associations:
       - subnetIdRef:
-          name: subnet-1
+          name: {{ .Values.subnetName }}
       # - subnetIdRef:
       #     name: subnet-2
     vpcIdRef:
-      name: playground-vpc
+      name: {{ .Values.vpcName }}
   providerConfigRef:
-    name: default
+    name: {{ .Values.providerConfigName }}
